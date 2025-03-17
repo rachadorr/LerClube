@@ -1,5 +1,6 @@
 openai-whisper @ git+https://github.com/openai/whisper.git@517a43ecd132a2089d85f4ebc044728a71d49f6e
 pytz==2025.1
+fastapi==0.115.11
 requests==2.32.3
 selenium==4.29.0
 webdriver-manager==4.0.2
