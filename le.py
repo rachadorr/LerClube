@@ -1,13 +1,9 @@
 from flask import Flask, render_template_string
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
-import time
+import requests
+import json
 from time import sleep
-from datetime import datetime
+import datetime
+import pytz
 import logging
 
 app = Flask(__name__)
@@ -16,78 +12,82 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def executar_script_selenium():
-    # Configurar o WebDriver (remova a opção headless para visualizar durante o desenvolvimento)
-    options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--window-size=1920,1080")
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=options)
-
-    log_output = []
-
+def obter_musica_clube_fm():
+    url = "https://aovivo.clube.fm/clube.json"
     try:
-        now = datetime.now()
-        log_output.append(f"Data e hora inicial: {now.strftime('%d-%m-%Y %H:%M:%S')}<br>")
+        response = requests.get(url)
+        response.raise_for_status()  # Lança uma exceção para status de erro
+        data = response.json()
+        singer = data['Pulsar']['OnAir']['media']['singer']
+        song = data['Pulsar']['OnAir']['media']['song']
+        return song, singer
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Erro ao acessar o JSON: {e}")
+        return None, None
+    except (KeyError, json.JSONDecodeError) as e:
+        logger.error(f"Erro ao processar o JSON: {e}")
+        return None, None
 
-        text_1_bkp = ''
-        completo = (f'Sequencia Clube do dia {now.strftime("%d-%m")} das {now.strftime("%H")}<br>')
-        contagem = 0
-        while contagem < 3:  # Reduzi para teste, você pode voltar para 57
-            driver.get("https://www.clube.fm/brasilia")
-            sleep(10)  # Reduzi para teste
+def formatar_hora_brasil():
+    now_utc = datetime.datetime.utcnow()
+    timezone_brasil = pytz.timezone('America/Sao_Paulo')
+    now_brasil = now_utc.astimezone(timezone_brasil)
+    return now_brasil.strftime("%d-%m-%Y / %H:%M")
 
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+log_completo = []
+ultima_musica = None
 
-            now = datetime.now()
-            text_1 = driver.find_element(By.CLASS_NAME, "sc-1aab1d33-4.fbUEHW").text
-            text_2 = driver.find_element(By.CLASS_NAME, "sc-1aab1d33-6.gkLYzf").text
-            hora = now.strftime("%d-%m-%Y %H:%M")
-            horaarq = now.strftime('%d-%m-%Y %H')
-            log_output.append(f"musica: {text_1} - artista: {text_2}<br>")
-            logger.info(f"musica: {text_1} - artista: {text_2}")
+def executar_monitoramento():
+    global log_completo, ultima_musica
+    inicio = formatar_hora_brasil()
+    log_completo.append(f"===========INICIO==========={inicio}<br>")
+    contagem = 0
+    output = []
+    while contagem < 3:  # Reduzi para teste, você pode voltar para 60
+        url = "https://aovivo.clube.fm/clube.json"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+            singer = data['Pulsar']['OnAir']['media']['singer']
+            song = data['Pulsar']['OnAir']['media']['song']
+            hora = formatar_hora_brasil().split(" / ")[1] # Pega só a hora
 
-            if text_1 != text_1_bkp:
-                if not (text_2.startswith("Com ") or text_2.startswith("CLUBE")):
-                    with open(f"clube_fm_{horaarq}.html", "a", encoding="utf-8") as file:
-                        file.write(f"\nmusica: {text_1} do ")
-                        file.write(f"artista: {text_2}")
-                        logger.info("Gravou")
-                    completo += (f"musica: {text_1} - artista: {text_2}<br>")
-
-                if text_1 == 'DISK RECAÍDA':
-                    with open(f"DISK RECAÍDA {horaarq}.html", "a", encoding="utf-8") as file1:
-                        file1.write(f"\nmusica: {text_1} - ")
-                        file1.write(f"artista: {text_2} - ")
-                        file1.write(f"Data e Hora: {hora}")
-                        logger.info(f"TOCOU': {text_1}")
+            if song != ultima_musica:
+                log_completo.append(f"Música: {song} - Artista: {singer} - Hora: {hora}<br>")
+                logger.info(f"Música: {song} - Artista: {singer} - Hora: {hora}")
+                ultima_musica = song
+                if song == 'DISK RECAÍDA':
+                    log_completo.append(f"<strong style='color:red;'>TOCOU A Música: {song} DO Artista: {singer} ÀS {hora}</strong><br>")
+                    logger.warning(f"TOCOU A Música: {song} DO Artista: {singer} ÀS {hora}")
             else:
-                log_output.append(f"Música já registrada ou era programação: {text_1}<br>")
-                logger.info(f"Música já registrada ou era programação: {text_1}")
+                log_completo.append(f"Música repetida ou sem alteração: {song} - Hora: {hora}<br>")
+                logger.info(f"Música repetida ou sem alteração: {song} - Hora: {hora}")
 
-            text_1_bkp = text_1
-            contagem += 1
-            sleep(5) # Reduzi para teste
+        except requests.exceptions.RequestException as e:
+            error_msg = f"Erro ao acessar o JSON: {e}<br>"
+            log_completo.append(error_msg)
+            logger.error(error_msg)
+        except (KeyError, json.JSONDecodeError) as e:
+            error_msg = f"Erro ao processar o JSON: {e}<br>"
+            log_completo.append(error_msg)
+            logger.error(error_msg)
 
-            if contagem >= 55:
-                logger.info(f"Contador de iterações': {contagem}")
+        sleep(10) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
+        contagem += 1
 
-        log_output.append(f"Data e hora final: {now.strftime('%d-%m-%Y %H:%M:%S')}<br>")
-        log_output.append(completo)
-
-    except Exception as e:
-        log_output.append(f"Ocorreu um erro: {e}<br>")
-        logger.error(f"Ocorreu um erro: {e}", exc_info=True)
-
-    finally:
-        driver.quit()
-        return "".join(log_output)
+    fim = formatar_hora_brasil()
+    log_completo.append(f"============FIM============{fim}<br>")
+    return "".join(log_completo)
 
 @app.route('/ler')
 def ler_pagina():
-    log_resultado = executar_script_selenium()
-    return f"<h1>Resultado da Execução:</h1><pre>{log_resultado}</pre>"
+    resultado = executar_monitoramento()
+    return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
+
+@app.route('/escrito')
+def pagina_escrito():
+    return "<h1>Esta acessando...</h1>"
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
