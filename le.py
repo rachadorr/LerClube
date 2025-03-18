@@ -80,10 +80,10 @@ def executar_monitoramento():
     log_completo.append(f"============FIM============{fim}<br>")
     return "".join(log_completo)
 
-@app.route('/ler')
-def ler_pagina():
-    resultado = executar_monitoramento()
-    return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
+#@app.route('/ler')
+#def ler_pagina():
+#    resultado = executar_monitoramento()
+#    return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"*/
 
 @app.route('/escrito')
 def pagina_escrito():
