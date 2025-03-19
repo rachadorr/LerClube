@@ -73,7 +73,7 @@ def executar_monitoramento():
     log_completo.append(f"===========INICIO==========={inicio}<br>")
     contagem = 0
     output = []
-    while contagem < 3:  # Reduzi para teste, você pode voltar para 60
+    while contagem < 90:  # Reduzi para teste, você pode voltar para 60
         url = "https://aovivo.clube.fm/clube.json"
         try:
             response = requests.get(url)
@@ -103,7 +103,7 @@ def executar_monitoramento():
             log_completo.append(error_msg)
             logger.error(error_msg)
 
-        sleep(10) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
+        sleep(50) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
         contagem += 1
 
     fim = formatar_hora_brasil()
