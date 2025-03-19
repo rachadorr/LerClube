@@ -93,7 +93,7 @@ def executar_monitoramento():
             else:
                 #log_completo.append(f"Música repetida ou sem alteração: {song} - Hora: {hora}<br>")
                 logger.info(f"Música repetida ou sem alteração: {song} - Hora: {hora}")
-            f"<pre>{resultado}</pre>"
+            f"<pre>Música: {song} - Artista: {singer} - Hora: {hora}<br></pre>"
 
         except requests.exceptions.RequestException as e:
             error_msg = f"Erro ao acessar o JSON: {e}<br>"
@@ -121,6 +121,10 @@ def ler_pagina():
 @app.route('/escrito')
 def pagina_escrito():
     return "<h1>Esta acessando...</h1>"
+
+@app.route('/')
+def home():
+    return "<h1>BEM VINDO A LEITURA DA CLUBE</h1>"
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
