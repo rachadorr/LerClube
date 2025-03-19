@@ -12,6 +12,36 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+def enviaWhatsApp(mensagem): 
+    try: 
+        # URL do servidor Node.js
+        url = "https://nodejs-production-f2ff.up.railway.app/send-message"
+        #url = "http://localhost:3000/send-message"
+
+        # Número do destinatário no formato internacional
+        numero = "555484411121"  # Exemplo: +55 11 99999-9999 (sem o +)
+
+        # Mensagem a ser enviada
+        #mensagem = "Olá!  Esta é uma mensagem enviada pelo Python via railway.com."
+
+        # Criando o payload
+        data = {
+            "number": numero,
+            "message": mensagem
+        }
+
+        # Enviando a requisição POST para o servidor Node.js
+        response = requests.post(url, json=data)
+
+        # Mostrando a resposta
+        print(response.json())
+
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Erro ao enviar mensagem para o WhatsApp: {e}")
+    except Exception as error:
+        print(f"❌ Erro ao iniciar o WhatsApp: {error}")
+
+
 def obter_musica_clube_fm():
     url = "https://aovivo.clube.fm/clube.json"
     try:
@@ -61,7 +91,7 @@ def executar_monitoramento():
                     log_completo.append(f"<strong style='color:red;'>TOCOU A Música: {song} DO Artista: {singer} ÀS {hora}</strong><br>")
                     logger.warning(f"TOCOU A Música: {song} DO Artista: {singer} ÀS {hora}")
             else:
-                log_completo.append(f"Música repetida ou sem alteração: {song} - Hora: {hora}<br>")
+                #log_completo.append(f"Música repetida ou sem alteração: {song} - Hora: {hora}<br>")
                 logger.info(f"Música repetida ou sem alteração: {song} - Hora: {hora}")
 
         except requests.exceptions.RequestException as e:
@@ -83,6 +113,7 @@ def executar_monitoramento():
 @app.route('/ler')
 def ler_pagina():
     resultado = executar_monitoramento()
+    enviaWhatsApp(resultado)
     return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
 
 @app.route('/escrito')
