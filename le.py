@@ -93,7 +93,7 @@ def executar_monitoramento():
             else:
                 #log_completo.append(f"Música repetida ou sem alteração: {song} - Hora: {hora}<br>")
                 logger.info(f"Música repetida ou sem alteração: {song} - Hora: {hora}")
-            <pre>{resultado}</pre>
+            f"<pre>{resultado}</pre>"
 
         except requests.exceptions.RequestException as e:
             error_msg = f"Erro ao acessar o JSON: {e}<br>"
