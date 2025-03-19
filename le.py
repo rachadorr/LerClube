@@ -83,7 +83,7 @@ def executar_monitoramento():
 @app.route('/ler')
 def ler_pagina():
     resultado = executar_monitoramento()
-    return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"*/
+    return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
 
 @app.route('/escrito')
 def pagina_escrito():
