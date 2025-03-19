@@ -73,7 +73,7 @@ def executar_monitoramento():
     log_completo.append(f"===========INICIO==========={inicio}<br>")
     contagem = 0
     output = []
-    while contagem < 90:  # Reduzi para teste, você pode voltar para 60
+    while contagem < 10:  # Reduzi para teste, você pode voltar para 60
         url = "https://aovivo.clube.fm/clube.json"
         try:
             response = requests.get(url)
@@ -93,6 +93,7 @@ def executar_monitoramento():
             else:
                 #log_completo.append(f"Música repetida ou sem alteração: {song} - Hora: {hora}<br>")
                 logger.info(f"Música repetida ou sem alteração: {song} - Hora: {hora}")
+            <pre>{resultado}</pre>
 
         except requests.exceptions.RequestException as e:
             error_msg = f"Erro ao acessar o JSON: {e}<br>"
@@ -103,7 +104,7 @@ def executar_monitoramento():
             log_completo.append(error_msg)
             logger.error(error_msg)
 
-        sleep(50) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
+        sleep(3) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
         contagem += 1
 
     fim = formatar_hora_brasil()
@@ -112,6 +113,7 @@ def executar_monitoramento():
 
 @app.route('/ler')
 def ler_pagina():
+    resultado = ''
     resultado = executar_monitoramento()
     enviaWhatsApp(resultado)
     return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
