@@ -21,9 +21,6 @@ def enviaWhatsApp(mensagem):
         # Número do destinatário no formato internacional
         numero = "555484411121"  # Exemplo: +55 11 99999-9999 (sem o +)
 
-        # Mensagem a ser enviada
-        #mensagem = "Olá!  Esta é uma mensagem enviada pelo Python via railway.com."
-
         # Criando o payload
         data = {
             "number": numero,
@@ -73,7 +70,7 @@ def executar_monitoramento():
     log_completo.append(f"===========INICIO==========={inicio}<br>")
     contagem = 0
     output = []
-    while contagem < 10:  # Reduzi para teste, você pode voltar para 60
+    while contagem < 90:  # Reduzi para teste, você pode voltar para 60
         url = "https://aovivo.clube.fm/clube.json"
         try:
             response = requests.get(url)
@@ -104,7 +101,7 @@ def executar_monitoramento():
             log_completo.append(error_msg)
             logger.error(error_msg)
 
-        sleep(3) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
+        sleep(50) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
         contagem += 1
 
     fim = formatar_hora_brasil()
