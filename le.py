@@ -61,14 +61,14 @@ def formatar_hora_brasil():
     now_brasil = now_utc.astimezone(timezone_brasil)
     return now_brasil.strftime("%d-%m-%Y / %H:%M")
 
-def executar_monitoramento():
+def executar_monitoramento(loops):
     log_completo = []
     ultima_musica = None
     inicio = formatar_hora_brasil()
     log_completo.append(f"===========INICIO==========={inicio}<br>")
     contagem = 0
     output = []
-    while contagem < 90:  # Reduzi para teste, você pode voltar para 60
+    while contagem < loops:  # Reduzi para teste, você pode voltar para 60
         url = "https://aovivo.clube.fm/clube.json"
         try:
             response = requests.get(url)
@@ -108,6 +108,7 @@ def executar_monitoramento():
 
 @app.route('/ler')
 def ler_pagina():
+    loops = int(request.args.get('loops', 90)) # Padrão: 90 loops
     resultado = ''
     resultado = executar_monitoramento()
     enviaWhatsApp(resultado)
