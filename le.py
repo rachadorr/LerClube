@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, request # Esse 'request' é para passar o parametro pelo URL
 import requests
 import json
 from time import sleep
