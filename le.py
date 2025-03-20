@@ -110,7 +110,7 @@ def executar_monitoramento(loops):
 def ler_pagina():
     loops = int(request.args.get('loops', 90)) # Padrão: 90 loops
     resultado = ''
-    resultado = executar_monitoramento()
+    resultado = executar_monitoramento(loops)
     enviaWhatsApp(resultado)
     return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
 
