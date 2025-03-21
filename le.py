@@ -67,6 +67,7 @@ def executar_monitoramento(loops):
     ultima_musica = None
     inicio = formatar_hora_brasil()
     log_completo.append(f"===========INICIO==========={inicio}<br>")
+    
     contagem = 0
     output = []
     while contagem < loops:  # Reduzi para teste, você pode voltar para 60
@@ -109,7 +110,7 @@ def executar_monitoramento(loops):
 
     fim = formatar_hora_brasil()
     log_completo.append(f"============FIM============{fim}<br>")
-    return "".join(log_completo), lista
+    return "".join(log_completo), "".join(lista)
 
 @app.route('/ler')
 def ler_pagina():
