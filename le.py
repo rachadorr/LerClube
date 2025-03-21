@@ -63,6 +63,7 @@ def formatar_hora_brasil():
 
 def executar_monitoramento(loops):
     log_completo = []
+    lista = []
     ultima_musica = None
     inicio = formatar_hora_brasil()
     log_completo.append(f"===========INICIO==========={inicio}<br>")
@@ -79,7 +80,11 @@ def executar_monitoramento(loops):
             hora = formatar_hora_brasil().split(" / ")[1] # Pega só a hora
 
             if song != ultima_musica:
+                if singer.startswith("Com ") or singer.startswith("CLUBE"):
+                    logger.info(f"NÃO É MUSICA - Música: {song} - Artista: {singer} - Hora: {hora}")
+                else:
                 log_completo.append(f"Música: {song} - Artista: {singer} - Hora: {hora}<br>")
+                lista.append(f"Música: {song} - Artista: {singer}\n")
                 logger.info(f"Música: {song} - Artista: {singer} - Hora: {hora}")
                 ultima_musica = song
                 if song == 'DISK RECAÍDA':
@@ -104,14 +109,15 @@ def executar_monitoramento(loops):
 
     fim = formatar_hora_brasil()
     log_completo.append(f"============FIM============{fim}<br>")
-    return "".join(log_completo)
+    return "".join(log_completo), lista
 
 @app.route('/ler')
 def ler_pagina():
     loops = int(request.args.get('loops', 90)) # Padrão: 90 loops
     resultado = ''
-    resultado = executar_monitoramento(loops)
-    enviaWhatsApp(resultado)
+    resultado, lista = executar_monitoramento(loops)
+    logger.info(lista)
+    enviaWhatsApp(lista)
     return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
 
 @app.route('/escrito')
