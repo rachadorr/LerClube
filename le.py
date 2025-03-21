@@ -83,10 +83,10 @@ def executar_monitoramento(loops):
                 if singer.startswith("Com ") or singer.startswith("CLUBE"):
                     logger.info(f"NÃO É MUSICA - Música: {song} - Artista: {singer} - Hora: {hora}")
                 else:
-                log_completo.append(f"Música: {song} - Artista: {singer} - Hora: {hora}<br>")
-                lista.append(f"Música: {song} - Artista: {singer}\n")
-                logger.info(f"Música: {song} - Artista: {singer} - Hora: {hora}")
-                ultima_musica = song
+                    log_completo.append(f"Música: {song} - Artista: {singer} - Hora: {hora}<br>")
+                    lista.append(f"Música: {song} - Artista: {singer}\n")
+                    logger.info(f"Música: {song} - Artista: {singer} - Hora: {hora}")
+                    ultima_musica = song
                 if song == 'DISK RECAÍDA':
                     log_completo.append(f"<strong style='color:red;'>TOCOU A Música: {song} DO Artista: {singer} ÀS {hora}</strong><br>")
                     logger.warning(f"TOCOU A Música: {song} DO Artista: {singer} ÀS {hora}")
