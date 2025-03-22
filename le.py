@@ -87,7 +87,6 @@ def executar_monitoramento(loops):
                     log_completo.append(f"Música: {song} - Artista: {singer} - Hora: {hora}<br>")
                     lista.append(f"Música: {song} - Artista: {singer}\n")
                     logger.info(f"Música: {song} - Artista: {singer} - Hora: {hora}")
-                    ultima_musica = song
                 if song == 'DISK RECAÍDA':
                     log_completo.append(f"<strong style='color:red;'>TOCOU A Música: {song} DO Artista: {singer} ÀS {hora}</strong><br>")
                     logger.warning(f"TOCOU A Música: {song} DO Artista: {singer} ÀS {hora}")
@@ -95,6 +94,7 @@ def executar_monitoramento(loops):
                 #log_completo.append(f"Música repetida ou sem alteração: {song} - Hora: {hora}<br>")
                 logger.info(f"Música repetida ou sem alteração: {song} - Hora: {hora}")
             f"<pre>Música: {song} - Artista: {singer} - Hora: {hora}<br></pre>"
+
 
         except requests.exceptions.RequestException as e:
             error_msg = f"Erro ao acessar o JSON: {e}<br>"
@@ -104,7 +104,8 @@ def executar_monitoramento(loops):
             error_msg = f"Erro ao processar o JSON: {e}<br>"
             log_completo.append(error_msg)
             logger.error(error_msg)
-
+        
+        ultima_musica = song
         sleep(50) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
         contagem += 1
 
@@ -114,7 +115,7 @@ def executar_monitoramento(loops):
 
 @app.route('/ler')
 def ler_pagina():
-    loops = int(request.args.get('loops', 90)) # Padrão: 90 loops
+    loops = int(request.args.get('loops', 70)) # Padrão: 70 loops
     resultado = ''
     resultado, lista = executar_monitoramento(loops)
     logger.info(lista)
