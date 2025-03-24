@@ -80,10 +80,10 @@ def executar_monitoramento(loops):
             song = data['Pulsar']['OnAir']['media']['song']
             hora = formatar_hora_brasil().split(" / ")[1] # Pega só a hora
 
-            if song != ultima_musica:
-                if singer.startswith("Com ") or singer.startswith("CLUBE"):
-                    logger.info(f"NÃO É MUSICA - Música: {song} - Artista: {singer} - Hora: {hora}")
-                else:
+            if singer.startswith("Com ") or singer.startswith("CLUBE"):
+                logger.info(f"NÃO É MUSICA - Música: {song} - Artista: {singer} - Hora: {hora}")
+                if song != ultima_musica:
+                #else:
                     log_completo.append(f"Música: {song} - Artista: {singer} - Hora: {hora}<br>")
                     lista.append(f"Música: {song} - Artista: {singer}\n")
                     logger.info(f"Música: {song} - Artista: {singer} - Hora: {hora}")
