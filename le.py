@@ -163,7 +163,7 @@ def ler_pagina():
 
 @app.route('/premio')
 def monitor():
-    loops = int(request.args.get('loops', 61)) # Padrão: 70 loops
+    loops = int(request.args.get('loops', 60)) # Padrão: 70 loops
     resultado = ''
     resultado = monitor_disk_e_splash(loops)
     f"<h1>VAMOS GANHAR O CELULAR:</h1>"
@@ -171,8 +171,8 @@ def monitor():
 
 # AGENDADOR
 scheduler = BackgroundScheduler(timezone='America/Sao_Paulo')
-scheduler.add_job(ler_pagina, 'cron', hour='9,13,19')
-#scheduler.add_job(monitor, 'cron', hour='9-20', minute='0')
+scheduler.add_job(executar_monitoramento(60), 'cron', hour='9,13,19')
+scheduler.add_job(monitor_disk_e_splash(59), 'cron', hour='9-20', minute='0')
 scheduler.start()
 
 #@app.route('/ler')
