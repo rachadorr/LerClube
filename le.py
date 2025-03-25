@@ -72,7 +72,7 @@ def executar_monitoramento():
     
     contagem = 0
     output = []
-    while contagem < 62:  # Reduzi para teste, você pode voltar para 60
+    while contagem < 61:  # Reduzi para teste, você pode voltar para 60
         url = "https://aovivo.clube.fm/clube.json"
         try:
             response = requests.get(url)
@@ -107,24 +107,67 @@ def executar_monitoramento():
             logger.error(error_msg)
         
         ultima_musica = song
-        sleep(55) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
+        sleep(58) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
         contagem += 1
 
     fim = formatar_hora_brasil()
     log_completo.append(f"============FIM============{fim}<br>")
     return "".join(log_completo), "".join(lista)
 
+def monitor_disk_e_splash():
+    log = []
+    inicio = formatar_hora_brasil()
+    
+    contagem = 0
+    output = []
+    while contagem < 60:  # Reduzi para teste, você pode voltar para 60
+        url = "https://aovivo.clube.fm/clube.json"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+            singer = data['Pulsar']['OnAir']['media']['singer']
+            song = data['Pulsar']['OnAir']['media']['song']
+            hora = formatar_hora_brasil().split(" / ")[1] # Pega só a hora
+
+            if song == 'DISK RECAÍDA' or 'BODY SPLASH':
+                log.append(f"Música: {song} - Artista: {singer}")
+                enviaWhatsApp(lista)
+
+        except requests.exceptions.RequestException as e:
+            error_msg = f"Erro ao acessar o JSON: {e}<br>"
+            log.append(error_msg)
+            logger.error(error_msg)
+        except (KeyError, json.JSONDecodeError) as e:
+            error_msg = f"Erro ao processar o JSON: {e}<br>"
+            log.append(error_msg)
+            logger.error(error_msg)
+        
+        sleep(59) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
+        contagem += 1
+
 
 @app.route('/ler')
 def ler_pagina():
-    resultado, lista = executar_monitoramento()
+    loops = int(request.args.get('loops', 61)) # Padrão: 70 loops
+    resultado = ''
+    resultado, lista = executar_monitoramento(loops)
     logger.info(lista)
     enviaWhatsApp(lista)
     return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
 
-# Agendador
-scheduler = BackgroundScheduler()
-scheduler.add_job(ler_pagina, 'cron', hour='9,13,19', timezone='America/Sao_Paulo')
+@app.route('/premio')
+def monitor():
+    loops = int(request.args.get('loops', 61)) # Padrão: 70 loops
+    resultado = ''
+    resultado = monitor_disk_e_splash(loops)
+    f"<h1>VAMOS GANHAR O CELULAR:</h1>"
+
+
+# AGENDADOR
+scheduler = BackgroundScheduler(timezone='America/Sao_Paulo')
+scheduler.add_job(ler_pagina, 'cron', hour='9,13,19')
+scheduler.add_job(monitor_disk_e_splash, 'cron', hour='9-20', minute='0')
 scheduler.start()
 
 #@app.route('/ler')
