@@ -114,10 +114,6 @@ def executar_monitoramento():
     log_completo.append(f"============FIM============{fim}<br>")
     return "".join(log_completo), "".join(lista)
 
-# Agendador
-scheduler = BackgroundScheduler()
-scheduler.add_job(ler_pagina, 'cron', hour='9,13,19', timezone='America/Sao_Paulo')
-scheduler.start()
 
 @app.route('/ler')
 def ler_pagina():
@@ -125,7 +121,12 @@ def ler_pagina():
     logger.info(lista)
     enviaWhatsApp(lista)
     return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
-    
+
+# Agendador
+scheduler = BackgroundScheduler()
+scheduler.add_job(ler_pagina, 'cron', hour='9,13,19', timezone='America/Sao_Paulo')
+scheduler.start()
+
 #@app.route('/ler')
 #def ler_pagina():
 #    loops = int(request.args.get('loops', 70)) # Padrão: 70 loops
