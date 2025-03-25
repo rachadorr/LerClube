@@ -172,7 +172,7 @@ def monitor():
 # AGENDADOR
 scheduler = BackgroundScheduler(timezone='America/Sao_Paulo')
 scheduler.add_job(ler_pagina, 'cron', hour='9,13,19')
-scheduler.add_job(monitor_disk_e_splash, 'cron', hour='9-20', minute='0')
+scheduler.add_job(monitor, 'cron', hour='9-20', minute='0')
 scheduler.start()
 
 #@app.route('/ler')
