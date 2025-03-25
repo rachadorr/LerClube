@@ -172,10 +172,10 @@ def monitor():
 
 
 # AGENDADOR
-scheduler = BackgroundScheduler(timezone='America/Sao_Paulo')
-scheduler.add_job(executar_monitoramento(60), 'cron', hour='9,13,19')
-scheduler.add_job(monitor_disk_e_splash(59), 'cron', hour='9-20', minute='0')
-scheduler.start()
+#scheduler = BackgroundScheduler(timezone='America/Sao_Paulo')
+#scheduler.add_job(executar_monitoramento(60), 'cron', hour='9,13,19')
+#scheduler.add_job(monitor_disk_e_splash(59), 'cron', hour='9-20', minute='0')
+#scheduler.start()
 
 #@app.route('/ler')
 #def ler_pagina():
