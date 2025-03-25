@@ -5,6 +5,8 @@ from time import sleep
 import datetime
 import pytz
 import logging
+from apscheduler.schedulers.background import BackgroundScheduler
+
 
 app = Flask(__name__)
 
@@ -61,7 +63,7 @@ def formatar_hora_brasil():
     now_brasil = now_utc.astimezone(timezone_brasil)
     return now_brasil.strftime("%d-%m-%Y / %H:%M")
 
-def executar_monitoramento(loops):
+def executar_monitoramento():
     log_completo = []
     lista = []
     ultima_musica = None
@@ -70,7 +72,7 @@ def executar_monitoramento(loops):
     
     contagem = 0
     output = []
-    while contagem < loops:  # Reduzi para teste, você pode voltar para 60
+    while contagem < 8:  # Reduzi para teste, você pode voltar para 60
         url = "https://aovivo.clube.fm/clube.json"
         try:
             response = requests.get(url)
@@ -105,21 +107,33 @@ def executar_monitoramento(loops):
             logger.error(error_msg)
         
         ultima_musica = song
-        sleep(50) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
+        sleep(55) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
         contagem += 1
 
     fim = formatar_hora_brasil()
     log_completo.append(f"============FIM============{fim}<br>")
     return "".join(log_completo), "".join(lista)
 
+# Agendador
+scheduler = BackgroundScheduler()
+scheduler.add_job(executar_monitoramento, 'cron', hour='9,13,19', timezone='America/Sao_Paulo')
+scheduler.start()
+
 @app.route('/ler')
 def ler_pagina():
-    loops = int(request.args.get('loops', 70)) # Padrão: 70 loops
-    resultado = ''
-    resultado, lista = executar_monitoramento(loops)
+    resultado, lista = executar_monitoramento()
     logger.info(lista)
     enviaWhatsApp(lista)
     return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
+    
+#@app.route('/ler')
+#def ler_pagina():
+#    loops = int(request.args.get('loops', 70)) # Padrão: 70 loops
+#    resultado = ''
+#    resultado, lista = executar_monitoramento(loops)
+#    logger.info(lista)
+#    enviaWhatsApp(lista)
+#    return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
 
 @app.route('/escrito')
 def pagina_escrito():
