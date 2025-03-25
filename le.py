@@ -69,6 +69,8 @@ def executar_monitoramento():
     ultima_musica = None
     inicio = formatar_hora_brasil()
     log_completo.append(f"===========INICIO==========={inicio}<br>")
+    logger.info(f"===========INICIO DO AGENDAMENTO CLUBE==========={inicio}")
+
     
     contagem = 0
     output = []
@@ -112,12 +114,13 @@ def executar_monitoramento():
 
     fim = formatar_hora_brasil()
     log_completo.append(f"============FIM============{fim}<br>")
+    logger.info(f"===========FINAL DO AGENDAMENTO CLUBE==========={inicio}")
     return "".join(log_completo), "".join(lista)
 
 def monitor_disk_e_splash():
     log = []
     inicio = formatar_hora_brasil()
-    
+    logger.info(f"===========INICIO DO AGENDAMENTO DISK==========={inicio}")    
     contagem = 0
     output = []
     while contagem < 60:  # Reduzi para teste, você pode voltar para 60
@@ -145,6 +148,8 @@ def monitor_disk_e_splash():
         
         sleep(59) # Reduzi para teste, você pode voltar para 30 ou a sua lógica original
         contagem += 1
+    fim = formatar_hora_brasil()
+    logger.info(f"===========FINAL DO AGENDAMENTO DISK==========={fim}")        
 
 
 @app.route('/ler')
