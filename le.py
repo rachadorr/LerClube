@@ -115,7 +115,10 @@ def executar_monitoramento(loops):
     fim = formatar_hora_brasil()
     log_completo.append(f"============FIM============{fim}<br>")
     logger.info(f"===========FINAL DO AGENDAMENTO CLUBE==========={inicio}")
-    return "".join(log_completo), "".join(lista)
+    lista = "".join(lista)
+    enviaWhatsApp(lista)
+
+    return "".join(log_completo), lista
 
 def monitor_disk_e_splash(loops):
     log = []
@@ -135,7 +138,7 @@ def monitor_disk_e_splash(loops):
 
             if song == 'DISK RECAÍDA' or 'BODY SPLASH':
                 log.append(f"Música: {song} - Artista: {singer}")
-                enviaWhatsApp(lista)
+                enviaWhatsApp(log)
 
         except requests.exceptions.RequestException as e:
             error_msg = f"Erro ao acessar o JSON: {e}<br>"
@@ -158,12 +161,11 @@ def ler_pagina():
     resultado = ''
     resultado, lista = executar_monitoramento(loops)
     logger.info(lista)
-    enviaWhatsApp(lista)
     return f"<h1>Sequência Clube FM:</h1><pre>{resultado}</pre>"
 
 @app.route('/premio')
 def monitor():
-    loops = int(request.args.get('loops', 60)) # Padrão: 70 loops
+    loops = int(request.args.get('loops', 20)) # Padrão: 70 loops
     resultado = ''
     resultado = monitor_disk_e_splash(loops)
     f"<h1>VAMOS GANHAR O CELULAR:</h1>"
