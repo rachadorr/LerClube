@@ -72,7 +72,7 @@ def executar_monitoramento():
     
     contagem = 0
     output = []
-    while contagem < 8:  # Reduzi para teste, você pode voltar para 60
+    while contagem < 62:  # Reduzi para teste, você pode voltar para 60
         url = "https://aovivo.clube.fm/clube.json"
         try:
             response = requests.get(url)
