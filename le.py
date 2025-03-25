@@ -63,7 +63,7 @@ def formatar_hora_brasil():
     now_brasil = now_utc.astimezone(timezone_brasil)
     return now_brasil.strftime("%d-%m-%Y / %H:%M")
 
-def executar_monitoramento():
+def executar_monitoramento(loops):
     log_completo = []
     lista = []
     ultima_musica = None
@@ -74,7 +74,7 @@ def executar_monitoramento():
     
     contagem = 0
     output = []
-    while contagem < 61:  # Reduzi para teste, você pode voltar para 60
+    while contagem < loops:  # Reduzi para teste, você pode voltar para 60
         url = "https://aovivo.clube.fm/clube.json"
         try:
             response = requests.get(url)
@@ -117,13 +117,13 @@ def executar_monitoramento():
     logger.info(f"===========FINAL DO AGENDAMENTO CLUBE==========={inicio}")
     return "".join(log_completo), "".join(lista)
 
-def monitor_disk_e_splash():
+def monitor_disk_e_splash(loops):
     log = []
     inicio = formatar_hora_brasil()
     logger.info(f"===========INICIO DO AGENDAMENTO DISK==========={inicio}")    
     contagem = 0
     output = []
-    while contagem < 60:  # Reduzi para teste, você pode voltar para 60
+    while contagem < loops:  # Reduzi para teste, você pode voltar para 60
         url = "https://aovivo.clube.fm/clube.json"
         try:
             response = requests.get(url)
