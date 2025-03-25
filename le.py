@@ -116,7 +116,7 @@ def executar_monitoramento():
 
 # Agendador
 scheduler = BackgroundScheduler()
-scheduler.add_job(executar_monitoramento, 'cron', hour='9,13,19', timezone='America/Sao_Paulo')
+scheduler.add_job(ler_pagina, 'cron', hour='9,13,19', timezone='America/Sao_Paulo')
 scheduler.start()
 
 @app.route('/ler')
