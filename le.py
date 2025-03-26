@@ -41,21 +41,21 @@ def enviaWhatsApp(mensagem):
         print(f"❌ Erro ao iniciar o WhatsApp: {error}")
 
 
-def obter_musica_clube_fm():
-    url = "https://aovivo.clube.fm/clube.json"
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Lança uma exceção para status de erro
-        data = response.json()
-        singer = data['Pulsar']['OnAir']['media']['singer']
-        song = data['Pulsar']['OnAir']['media']['song']
-        return song, singer
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Erro ao acessar o JSON: {e}")
-        return None, None
-    except (KeyError, json.JSONDecodeError) as e:
-        logger.error(f"Erro ao processar o JSON: {e}")
-        return None, None
+#def obter_musica_clube_fm():
+#    url = "https://aovivo.clube.fm/clube.json"
+#    try:
+#        response = requests.get(url)
+#        response.raise_for_status()  # Lança uma exceção para status de erro
+#        data = response.json()
+#        singer = data['Pulsar']['OnAir']['media']['singer']
+#        song = data['Pulsar']['OnAir']['media']['song']
+#        return song, singer
+#    except requests.exceptions.RequestException as e:
+#        logger.error(f"Erro ao acessar o JSON: {e}")
+#        return None, None
+#    except (KeyError, json.JSONDecodeError) as e:
+#        logger.error(f"Erro ao processar o JSON: {e}")
+#        return None, None
 
 def formatar_hora_brasil():
     now_utc = datetime.datetime.utcnow()
@@ -167,7 +167,7 @@ def ler_pagina():
 
 @app.route('/premio')
 def monitor():
-    loops = int(request.args.get('loops', 20)) # Padrão: 70 loops
+    loops = int(request.args.get('loops', 60)) # Padrão: 70 loops
     resultado = ''
     resultado = monitor_disk_e_splash(loops)
     return f"<h1>VAMOS GANHAR O CELULAR:</h1>"
