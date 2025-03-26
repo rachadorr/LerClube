@@ -170,7 +170,7 @@ def monitor():
     loops = int(request.args.get('loops', 20)) # Padrão: 70 loops
     resultado = ''
     resultado = monitor_disk_e_splash(loops)
-    f"<h1>VAMOS GANHAR O CELULAR:</h1>"
+    return f"<h1>VAMOS GANHAR O CELULAR:</h1>"
 
 
 # AGENDADOR
