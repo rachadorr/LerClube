@@ -136,7 +136,7 @@ def monitor_disk_e_splash(loops):
             song = data['Pulsar']['OnAir']['media']['song']
             hora = formatar_hora_brasil().split(" / ")[1] # Pega só a hora
 
-            if song == 'DISK RECAÍDA' or 'BODY SPLASH':
+            if song == 'DISK RECAÍDA' or song == 'BODY SPLASH':
                 logger.info(f"NÃO É MUSICA - Música: {song} - Artista: {singer} - Hora: {hora}")
                 log.append(f"Música: {song} - Artista: {singer}")
                 msg = "".join(log)
