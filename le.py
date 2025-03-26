@@ -138,7 +138,8 @@ def monitor_disk_e_splash(loops):
 
             if song == 'DISK RECAÍDA' or 'BODY SPLASH':
                 log.append(f"Música: {song} - Artista: {singer}")
-                enviaWhatsApp(log)
+                msg = "".join(log)
+                enviaWhatsApp(msg)
 
         except requests.exceptions.RequestException as e:
             error_msg = f"Erro ao acessar o JSON: {e}<br>"
