@@ -175,8 +175,8 @@ def monitor():
 
 # AGENDADOR
 scheduler = BackgroundScheduler(timezone='America/Sao_Paulo')
-scheduler.add_job(executar_monitoramento, 'cron', hour='9,13,19', args=[60])
-scheduler.add_job(monitor_disk_e_splash, 'cron', hour='7-19', minute='58', args=[59])
+scheduler.add_job(executar_monitoramento, 'cron', hour='9,13,19', args=[60], id='monitor_clube', max_instances=1)
+scheduler.add_job(monitor_disk_e_splash, 'cron', hour='7-19', minute='58', args=[59], id='monitor_disk', max_instances=1)
 scheduler.start()
 
 #@app.route('/ler')
@@ -197,4 +197,4 @@ def home():
     return "<h1>BEM VINDO A LEITURA DA CLUBE</h1>"
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=5000)
