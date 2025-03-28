@@ -116,6 +116,7 @@ def executar_monitoramento(loops):
     log_completo.append(f"============FIM============{fim}<br>")
     logger.info(f"===========FINAL DO AGENDAMENTO CLUBE==========={inicio}")
     lista = "".join(lista)
+    logger.info(lista)
     enviaWhatsApp(lista)
 
     return "".join(log_completo), lista
@@ -137,10 +138,11 @@ def monitor_disk_e_splash(loops):
             hora = formatar_hora_brasil().split(" / ")[1] # Pega só a hora
 
             if song == 'DISK RECAÍDA' or song == 'BODY SPLASH':
-                logger.info(f"NÃO É MUSICA - Música: {song} - Artista: {singer} - Hora: {hora}")
+                logger.info(f"====TOCOU A MUSICA DA PROMOÇÃO===== - Música: {song} - Artista: {singer} - Hora: {hora}")
                 log.append(f"Música: {song} - Artista: {singer}")
                 msg = "".join(log)
                 enviaWhatsApp(msg)
+                return
 
         except requests.exceptions.RequestException as e:
             error_msg = f"Erro ao acessar o JSON: {e}<br>"
