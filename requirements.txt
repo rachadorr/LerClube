@@ -2,8 +2,8 @@ openai-whisper @ git+https://github.com/openai/whisper.git@517a43ecd132a2089d85f
 pytz==2025.1
 fastapi==0.115.11
 requests==2.32.3
-selenium==4.29.0
-webdriver-manager==4.0.2
+#selenium==4.29.0
+#webdriver-manager==4.0.2
 websocket-client==1.8.0
 Flask==3.0.3
 pytz
